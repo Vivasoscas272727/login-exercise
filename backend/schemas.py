@@ -19,4 +19,8 @@ class UserResponse(BaseModel):
     
     class Config:
         from_attributes = True
-        
+
+class UserVerify(BaseModel):
+    email: EmailStr
+    codigo : str
+    

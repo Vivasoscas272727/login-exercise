@@ -12,3 +12,4 @@ class User(Base):
     email = Column(String(100), unique=True, index=True, nullable=False)
     hashed_password = Column(String(255), nullable=False)
     is_active = Column(Boolean, default=False)
+    codigo_verificacion = Column(String(10), nullable=True)
