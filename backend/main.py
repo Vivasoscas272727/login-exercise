@@ -68,23 +68,51 @@ def register_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
 @app.post("/verify")
 def verify_user(user_data: schemas.UserVerify, db: Session = Depends(get_db)):
-    #buscamos el usuario por su correo
-    usuario = db.query(models.User).filter(models.User.email == user_data.email.first())
-    #validamos que el usuario exista
-    if not usuario:
-        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    try:
+        correo_texto = str(user_data.email)
+        codigo_texto = str(user_data.codigo)
+
+        #Buscamos al usuario
+        usuario = db.query(models.User).filter(models.User.email == correo_texto).first()
+        
+        if not usuario:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
+            
+        if usuario.is_active:
+            raise HTTPException(status_code=400, detail="La cuenta ya está verificada")
+            
+        if str(usuario.codigo_verificacion) != codigo_texto:
+            raise HTTPException(status_code=400, detail="Código de verificación incorrecto")
+            
+        #Activamos la cuenta
+        usuario.is_active = True
+        usuario.codigo_verificacion = None
+        db.commit()
+        
+        return {"mensaje": "Cuenta verificada exitosamente. Ya puedes iniciar sesión."}
     
-    #validamos que no este activo ya 
-    if usuario.is_active:
-        raise HTTPException(status_code=400, detail="La cuenta ya está verificada")
+    except HTTPException as http_exc:
+        # Si es un error nuestro (404 o 400), lo dejamos pasar normal
+        raise http_exc
+    except Exception as e:
+        # Si ocurre un error interno (500), lo ATRAPAMOS y lo mostramos en la web
+        raise HTTPException(status_code=500, detail=f"El error real es: {str(e)}")
     
-    #validamos que el codigo sea correcto
-    if usuario.codigo_verificacion != user_data.codigo:
-        raise HTTPException(status_code=400, detail="Código de verificación incorrecto")
+
+@app.post("/login")
+def login_user(user_data: schemas.UserLogin, db: Session = Depends(get_db)):
+    #Buscamos al usuario por su correo
+    usuario = db.query(models.User).filter(models.User.email == user_data.email).first()
     
-    #activamos la cuenta
-    usuario.is_active = True
-    usuario.codigo_verificacion = None
-    db.commit()
+    #Verificamos si existe y si la contraseña coincide con la encriptada
+    if not usuario or not utils.verify_password(user_data.password, usuario.hashed_password):
+        raise HTTPException(status_code=401, detail="Correo o contraseña incorrectos")
+        
+    #Verificamos que la cuenta esté confirmada (que pasó por el /verify)
+    if not usuario.is_active:
+        raise HTTPException(status_code=403, detail="Debes verificar tu correo antes de entrar")
+        
+    access_token = utils.create_access_token(data={"sub": usuario.email})
     
-    return{"mensaje": "Cuenta verificada exitosamente. Ya puedes iniciar sesión."}
+    #Se lo entregamos al frontend
+    return {"access_token": access_token, "token_type": "bearer"}

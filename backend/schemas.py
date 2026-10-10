@@ -23,4 +23,7 @@ class UserResponse(BaseModel):
 class UserVerify(BaseModel):
     email: EmailStr
     codigo : str
-    
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str

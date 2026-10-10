@@ -2,6 +2,8 @@ from passlib.context import CryptContext
 import smtplib
 from email.mime.text import MIMEText
 import random
+import jwt 
+from datetime import datetime, timedelta, timezone
 
 #configuramos el motor de encriptacion
 
@@ -32,3 +34,20 @@ def enviar_correo(correo_destino: str, codigo: str):
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
         server.login(CORREO_ORIGEN, CONTRASENA_APP)
         server.sendmail(CORREO_ORIGEN,correo_destino, mensaje.as_string())
+        
+        
+#token JWT
+
+SECRET_KEY = "villarroel676767676767676767"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+def create_access_token(data: dict):
+    to_encode = data.copy()
+    #calculamos el tiempo en el que token expirara
+    expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp" : expire})
+    
+    #se crea el topken con la firma secreta
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY,algorithm=ALGORITHM)
+    return encoded_jwt
