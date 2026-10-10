@@ -6,7 +6,8 @@ from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 import schemas
 from database import engine, get_db
-
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.middleware.cors import CORSMiddleware
 #python -m uvicorn main:app --reload
 
 #con este comando le decimos a SQLALCHEMY que revise y cree las tablas en MariaDB
@@ -14,14 +15,16 @@ models.Base.metadata.create_all(bind=engine)
 
 #inicializamos FastAPI
 app = FastAPI(title= "API de Autenticacion")
-
-#configuramos los permisos los (CORS)
-app.add_middleware( 
+origenes_permitidos = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origenes_permitidos,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"], # Permite todos los métodos (GET, POST, etc.)
+    allow_headers=["*"], # Permite enviar tokens y otros headers
 )
 
 #ruta basica para comprobar que todo este bien
@@ -116,3 +119,38 @@ def login_user(user_data: schemas.UserLogin, db: Session = Depends(get_db)):
     
     #Se lo entregamos al frontend
     return {"access_token": access_token, "token_type": "bearer"}
+
+security = HTTPBearer()
+
+def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security), db: Session = Depends(get_db)):
+    try:
+        token = credentials.credentials
+        correo = utils.verify_token(token)
+        
+        if not correo:
+            raise HTTPException(status_code=401, detail="Token inválido o expirado. Inicia sesión de nuevo.")
+            
+        usuario = db.query(models.User).filter(models.User.email == correo).first()
+        if not usuario:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
+            
+        return usuario
+        
+    except HTTPException as http_exc:
+        raise http_exc
+    except Exception as e:
+        # ¡Esto forzará a que el error real aparezca en la web!
+        raise HTTPException(status_code=500, detail=f"El error del guardia es: {str(e)}")
+    
+@app.get("/perfil")
+def obtener_perfil(usuario_actual: models.User = Depends(get_current_user)):
+    # Si llegaste hasta aquí, el token es real. Devolvemos los datos del usuario.
+    return {
+        "mensaje": "¡Bienvenido a tu perfil privado!",
+        "datos": {
+            "nombre": usuario_actual.nombre,
+            "apellido": usuario_actual.apellido,
+            "email": usuario_actual.email,
+            "cedula": usuario_actual.cedula_rif
+        }
+    }
