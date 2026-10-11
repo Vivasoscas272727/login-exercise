@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 // Ajustamos las rutas para que coincidan con tu carpeta "view" y tus archivos en minúsculas
 import LoginView from '../view/login.vue'
 import registerView from '../view/register.vue'
+import confirmView from '../view/confirm.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,6 +16,11 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: registerView
+    },
+    {
+      path: '/confirm', 
+      name: 'confirm',
+      component: confirmView
     }
   ]
 })

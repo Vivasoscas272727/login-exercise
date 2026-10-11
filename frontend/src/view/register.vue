@@ -11,7 +11,7 @@
         <h2>Registro en Gotham</h2>
         <p>Crea tu cuenta para acceder al sistema</p>
 
-        <form>
+        <form @submit.prevent="procesarRegistro">
           <input type="text" placeholder="Nombre" required />
           <input type="text" placeholder="Apellido" required />
           <input type="text" placeholder="Cédula" required />
@@ -35,8 +35,12 @@
 </template>
 
 <script setup>
-// Importamos la herramienta de Vue para navegar entre pantallas
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
+const router = useRouter()
+const procesarRegistro = () => {
+  
+  router.push('/confirm')
+}
 </script>
 
 <style scoped>
