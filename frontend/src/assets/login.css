@@ -1,0 +1,116 @@
+/* Reseteamos márgenes por si acaso */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.login-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  font-family: Arial, sans-serif;
+}
+
+/* --- LADO IZQUIERDO (IMAGEN DE GOTHAM) --- */
+.left-side {
+  flex: 1; /* Ocupa exactamente la mitad (50%) */
+  /* Aquí cargamos tu imagen */
+  background-image: url('./imagen1.jpg');
+  background-size: cover; /* Hace que la imagen cubra todo el espacio sin deformarse */
+  background-position: center; /* Centra la imagen */
+  background-repeat: no-repeat;
+}
+
+/* --- LADO DERECHO (FORMULARIO) --- */
+.right-side {
+  flex: 1; /* Ocupa la otra mitad (50%) */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 20px;
+}
+
+/* Ajustando el ancho del formulario */
+.form-wrapper {
+  width: 100%;
+  max-width: 350px;
+}
+
+.right-side h2 {
+  font-size: 28px;
+  color: #1a1a1a;
+  margin-bottom: 5px;
+}
+
+.right-side p {
+  color: #666;
+  margin-bottom: 30px;
+}
+
+/* Inputs del formulario */
+/* Inputs del formulario */
+input[type="email"],
+input[type="password"],
+input[type="text"],
+input[type="tel"] {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+
+}
+
+input:focus {
+  border-color: #1a1a1a;
+}
+
+/* Contenedor de Recordar y Resetear */
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 13px;
+}
+
+.form-actions a {
+  color: #1a1a1a;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* Botón Principal */
+button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background-color: #1a1a1a; /* Negro Batman */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+button[type="submit"]:hover {
+  background-color: #333333;
+}
+
+.signup-text {
+  text-align: center;
+  font-size: 13px;
+  color: #666;
+}
+
+.signup-text a {
+  color: #1a1a1a;
+  font-weight: bold;
+  text-decoration: none;
+}
+
