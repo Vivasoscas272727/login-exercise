@@ -18,10 +18,11 @@ app = FastAPI(title= "API de Autenticacion")
 origenes_permitidos = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "https://zpvrcb-ip-190-6-19-151.tunnelmole.net",
 ]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origenes_permitidos,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"], # Permite todos los métodos (GET, POST, etc.)
     allow_headers=["*"], # Permite enviar tokens y otros headers
