@@ -44,7 +44,7 @@ const password = ref('')
 const iniciarSesion = async () => {
   try {
     // IMPORTANTE: Asumo que tu ruta en FastAPI se llama "/login"
-    const respuesta = await fetch('[https://zpvrcb-ip-190-6-19-151.tunnelmole.net/login](https://zpvrcb-ip-190-6-19-151.tunnelmole.net/login)', {
+    const respuesta = await fetch('https://6vugo9-ip-190-153-16-216.tunnelmole.net/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

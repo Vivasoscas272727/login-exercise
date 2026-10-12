@@ -1,3 +1,5 @@
+<!--npx tunnelmole 8000-->
+<!--npx tunnelmole 5173-->
 <template>
   <div class="login-container">
     <div class="left-side"></div>
@@ -46,7 +48,7 @@ const enviarCodigo = async () => {
   try {
     console.log("Enviando código para el correo:", correoUsuario)
 
-    const respuesta = await fetch('[https://zpvrcb-ip-190-6-19-151.tunnelmole.net/confirm](https://zpvrcb-ip-190-6-19-151.tunnelmole.net/confirm)', {
+    const respuesta = await fetch('https://6vugo9-ip-190-153-16-216.tunnelmole.net/verify', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -60,7 +62,7 @@ const enviarCodigo = async () => {
 
     if (respuesta.ok) {
       alert("¡Cuenta verificada con éxito!")
-      router.push('/')
+      router.push({ path: '/confirm', query: { email: correo.value } })
     } else {
       const errorData = await respuesta.json()
       alert("Error: " + JSON.stringify(errorData, null, 2))

@@ -63,7 +63,7 @@ const procesarRegistro = async () => {
 
     // 3. Enviamos la petición POST a tu backend
     // NOTA: Asegúrate de que tu backend esté corriendo y que esta URL sea la correcta
-    const respuesta = await fetch('[https://zpvrcb-ip-190-6-19-151.tunnelmole.net/register](https://zpvrcb-ip-190-6-19-151.tunnelmole.net/register)', {
+    const respuesta = await fetch ('https://6vugo9-ip-190-153-16-216.tunnelmole.net/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
